@@ -6,7 +6,9 @@ let sliderLength = sliderImages.length,
     sliderCount = 0,//Math.floor(sliderImages.length / 2)
     sliderWidth,
     windowWidth = window.screen.width,
-    imgVisibleCount;
+    imgVisibleCount,
+    startX,
+    endX;
 
 if (windowWidth > 950) {
     imgVisibleCount = 3;
@@ -16,6 +18,12 @@ if (windowWidth > 950) {
     imgVisibleCount = 1;
 }
 
+document.querySelectorAll('img').forEach(img => {
+    img.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+    });
+});
+
 
 function createDots() {
     for (let i = 0; i < sliderImages.length - (imgVisibleCount - 1); i++) {
@@ -24,6 +32,23 @@ function createDots() {
         dotsContainer.appendChild(dot);
     };
 }
+
+createDots();
+updateDots()
+
+if (dotsContainer) {
+    const dotChilds = Array.from(dotsContainer.children);
+    console.log(dotChilds)
+    for (let childCount = 0; childCount < dotChilds.length; childCount++) {
+        dotChilds[childCount].addEventListener('click', () => {
+            sliderCount = childCount;
+            nextSlide(plusCount=false);
+        });
+    };
+} else {
+    console.error('Элемент с классом .dots не найден');
+}
+
 
 function updateDots() {
     // Удалить класс 'active' у всех точек
@@ -37,7 +62,6 @@ function updateDots() {
     }
 }
 
-createDots();
 
 function showSlide() {
     sliderWidth = document.querySelector('.swiper-slider').offsetWidth;
@@ -49,8 +73,8 @@ function showSlide() {
 showSlide();
 // focusSlide();
 
-function nextSlide() {
-    sliderCount++;
+function nextSlide(plusCount=true) {
+    if (plusCount) sliderCount++;
     if (sliderCount > sliderImages.length - imgVisibleCount) sliderCount = 0;
     rollSlide();
     // unfocusSlide();
@@ -81,3 +105,35 @@ function unfocusSlide() {
 // setInterval(nextSlide, 5000);
 
 slider.addEventListener('resize', showSlide);
+
+sliderParent.addEventListener('mousedown', (e) => {
+    startX = e.clientX;
+    initialPosition = sliderCount * (windowWidth / imgVisibleCount);
+    sliderParent.addEventListener('mousemove', onMouseMove);
+});
+
+sliderParent.addEventListener('mouseup', () => {
+    sliderParent.removeEventListener('mousemove', onMouseMove);
+    if (endX !== undefined) {
+        if (startX > endX + windowWidth / 2) {
+            nextSlide();
+            nextSlide();
+        } else if (startX < endX - windowWidth / 2) {
+            prevSlide();
+            prevSlide();
+        } else if (startX > endX + 50) {
+            nextSlide();
+        } else if (startX < endX - 50) {
+            prevSlide();
+        }
+    }
+    startX = undefined;
+    endX = undefined;
+});
+
+function onMouseMove(e) {
+    if (startX !== undefined) {
+        endX = e.clientX;
+        slider.style.transform = `translateX(-${initialPosition - (endX - startX)}px)`;
+    }
+}

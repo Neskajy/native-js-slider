@@ -81,19 +81,20 @@ img {
         justify-content: center;
         background-color: transparent;
         border: none;
-
         img {
-
             width: 24px;
             height: 24px;
             padding: 8px;
             background-color: blueviolet;
             border-radius: 50%;
         }
+        
     }
     .slider {
+        cursor: pointer;
+        
         transition: .8s ease-in-out;
-    
+        
         /* width: 15000px; */
         /* justify-content: space-between; */
         display: inline-flex;
@@ -101,8 +102,12 @@ img {
         /* gap: 30px; */
         
         transition: .5 ease-in-out;
+        perspective: 1000px; /* Добавляет перспективу для 3D-трансформаций */
         img {
             max-height: 320px;
+            /* &:hover {
+                transform: rotateY(-10deg);
+            } */
         }
     }
     .dots {
@@ -112,6 +117,7 @@ img {
         gap: 8px;
         justify-content: center;
         .dot {
+            cursor: pointer;
             background-color: #959595;
             width: 15px;
             height: 15px;
