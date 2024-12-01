@@ -1,0 +1,15 @@
+@import url("slider.css");
+@import url("sliderSettings.css");
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.block {
+    width: 1000px;
+    height: 400px;
+    /* background: black; */
+}
